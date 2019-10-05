@@ -1,0 +1,20 @@
+name: 'Upload to Release Action'
+description: 'A GitHub Action that uploads a file to a new release.'
+author: 'alk831'
+inputs:
+  name:
+    description: 'Artifact name'
+    required: true
+  path:
+    description: 'Path to the file to upload'
+    required: true
+  content-type:
+    description: 'Content type for the file'
+    required: false
+    default: 'application/octet-stream'
+  repo-token:
+    description: 'secrets.GITHUB_TOKEN'
+    required: true
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
