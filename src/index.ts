@@ -8,7 +8,7 @@ async function run() {
     : {};
 
   core.debug(process.env.GITHUB_EVENT_PATH);
-  core.setFailed(process.env.GITHUB_EVENT_PATH);
+  return core.setFailed(process.env.GITHUB_EVENT_PATH);
   console.log(process.env.GITHUB_EVENT_PATH, process.env.GITHUB_REPOSITORY)
 
   const { release, action: actionName } = payload;
