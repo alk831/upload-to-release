@@ -7,6 +7,8 @@ async function run() {
     ? require(process.env.GITHUB_EVENT_PATH)
     : {};
 
+  core.debug(process.env.GITHUB_EVENT_PATH);
+
   const { release, action: actionName } = payload;
 
   if (!release) {
