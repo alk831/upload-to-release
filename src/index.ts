@@ -18,7 +18,7 @@ async function run() {
   const { release, action: actionName } = payload;
 
   if (!release) {
-    return core.setFailed(`No release has been found. Skipping action (${actionName}).`);
+    // return core.setFailed(`No release has been found. Skipping action (${actionName}).`);
   }
 
   const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
