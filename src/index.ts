@@ -31,7 +31,6 @@ async function run() {
   octokit.repos.getRelease(releaseData);
 
   const releaseResponse = await octokit.repos.getRelease(releaseData);
-  releaseResponse.data.id
 
   for (const asset of releaseResponse.data.assets) {
     if (asset.name === assetName) {
@@ -54,6 +53,8 @@ async function run() {
     headers, 
     file,
   });
+
+  console.log({ uploadResponse })
 
   const downloadUrl = uploadResponse.data.value.browser_download_url;
 
