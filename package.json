@@ -7,7 +7,7 @@
     "test": "jest --ci"
   },
   "hooks": {
-    "precommit": "tsc"
+    "pre-push": "tsc"
   },
   "repository": {
     "type": "git",

@@ -10,15 +10,12 @@ async function run() {
   core.debug(process.env.GITHUB_EVENT_PATH);
   core.debug('process.env.GITHUB_EVENT_PATH');
 
-  return;
-
-  return core.setFailed(process.env.GITHUB_EVENT_PATH);
   console.log(process.env.GITHUB_EVENT_PATH, process.env.GITHUB_REPOSITORY)
 
   const { release, action: actionName } = payload;
 
   if (!release) {
-    // return core.setFailed(`No release has been found. Skipping action (${actionName}).`);
+    return core.setFailed(`No release has been found. Skipping action (${actionName}).`);
   }
 
   const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
@@ -63,7 +60,7 @@ async function run() {
 
 async function main() {
   try {
-    // await run();
+    await run();
   } catch(error) {
     core.setFailed(error.message);
   }
