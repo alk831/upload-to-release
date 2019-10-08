@@ -1,0 +1,31 @@
+name: Upload to release test
+
+on: [push] 
+
+jobs:
+
+  build:
+ 
+    runs-on: ubuntu-latest
+ 
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the Docker image
+      run: |
+        docker build . --file Dockerfile --tag hellokitty
+        docker save hellokitty:latest > hellokitty.tar
+        
+    - name: saved
+      run: ls
+
+    - uses: actions/upload-artifact@master
+      with:
+        name: my-artifact
+        path: hellokitty.tar
+        
+    - uses: ./
+      with:
+        name: my-artifact
+        path: hellokitty.tar
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        content-type: text/plain # Optional: 
