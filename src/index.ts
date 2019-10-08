@@ -7,6 +7,7 @@ async function run() {
     ? require(process.env.GITHUB_EVENT_PATH)
     : {}; 
 
+  console.log({ payload });
   core.debug(process.env.GITHUB_EVENT_PATH);
   core.debug('process.env.GITHUB_EVENT_PATH');
 
@@ -30,6 +31,7 @@ async function run() {
   octokit.repos.getRelease(releaseData);
 
   const releaseResponse = await octokit.repos.getRelease(releaseData);
+  releaseResponse.data.id
 
   for (const asset of releaseResponse.data.assets) {
     if (asset.name === name) {
