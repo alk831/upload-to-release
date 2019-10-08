@@ -6,6 +6,9 @@
   "scripts": {
     "test": "jest --ci"
   },
+  "hooks": {
+    "precommit": "tsc"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alk831/upload-to-release.git"
@@ -29,6 +32,7 @@
   "homepage": "https://github.com/alk831/upload-to-release#readme",
   "devDependencies": {
     "@types/node": "^12.7.11",
+    "husky": "^3.0.8",
     "typescript": "^3.6.3"
   },
   "dependencies": {
