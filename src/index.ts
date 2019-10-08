@@ -34,7 +34,7 @@ async function run() {
   releaseResponse.data.id
 
   for (const asset of releaseResponse.data.assets) {
-    if (asset.name === name) {
+    if (asset.name === assetName) {
       core.debug(`Removing asset "${asset.name}" due to name conflict.`);
       
       const assetToDelete = { owner, repo, asset_id: asset.id };
@@ -74,5 +74,16 @@ interface ActionPayload {
   action?: string
   release?: {
     id: number
+    name: string
+    tag_name: string
+    prerelease: boolean
+    draft: boolean
+    assets: unknown[]
+    created_at: string
+    published_at: string
+    /** Branch name? */
+    target_commitish: string
+    url: string
+    assets_url: string
   }
 }

@@ -33,7 +33,7 @@ async function run() {
     const releaseResponse = await octokit.repos.getRelease(releaseData);
     releaseResponse.data.id;
     for (const asset of releaseResponse.data.assets) {
-        if (asset.name === name) {
+        if (asset.name === assetName) {
             core.debug(`Removing asset "${asset.name}" due to name conflict.`);
             const assetToDelete = { owner, repo, asset_id: asset.id };
             await octokit.repos.deleteReleaseAsset(assetToDelete);
