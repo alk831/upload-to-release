@@ -50,7 +50,9 @@ async function run() {
         file,
     });
     console.log({ uploadResponse });
-    const downloadUrl = uploadResponse.data.value.browser_download_url;
+    // invalid type
+    // create PR in octokit repo
+    const downloadUrl = uploadResponse.data.browser_download_url;
     core.debug(`Download URL: ${downloadUrl}`);
 }
 async function main() {
