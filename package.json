@@ -6,8 +6,10 @@
   "scripts": {
     "test": "jest --ci"
   },
-  "hooks": {
-    "pre-commit": "tsc"
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsc"
+    }
   },
   "repository": {
     "type": "git",
