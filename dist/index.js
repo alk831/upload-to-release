@@ -31,7 +31,6 @@ async function run() {
     const octokit = new github_1.GitHub(repoToken);
     octokit.repos.getRelease(releaseData);
     const releaseResponse = await octokit.repos.getRelease(releaseData);
-    releaseResponse.data.id;
     for (const asset of releaseResponse.data.assets) {
         if (asset.name === assetName) {
             core.debug(`Removing asset "${asset.name}" due to name conflict.`);
@@ -50,6 +49,7 @@ async function run() {
         headers,
         file,
     });
+    console.log({ uploadResponse });
     const downloadUrl = uploadResponse.data.value.browser_download_url;
     core.debug(`Download URL: ${downloadUrl}`);
 }
