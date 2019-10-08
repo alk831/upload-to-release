@@ -5,7 +5,7 @@ import * as fs from 'fs';
 async function run() {
   const payload: ActionPayload = process.env.GITHUB_EVENT_PATH
     ? require(process.env.GITHUB_EVENT_PATH)
-    : {};
+    : {}; 
 
   core.debug(process.env.GITHUB_EVENT_PATH);
   core.debug('process.env.GITHUB_EVENT_PATH');
