@@ -14,6 +14,7 @@ async function run() {
     const payload = process.env.GITHUB_EVENT_PATH
         ? require(process.env.GITHUB_EVENT_PATH)
         : {};
+    console.log({ payload });
     core.debug(process.env.GITHUB_EVENT_PATH);
     core.debug('process.env.GITHUB_EVENT_PATH');
     console.log(process.env.GITHUB_EVENT_PATH, process.env.GITHUB_REPOSITORY);
@@ -30,6 +31,7 @@ async function run() {
     const octokit = new github_1.GitHub(repoToken);
     octokit.repos.getRelease(releaseData);
     const releaseResponse = await octokit.repos.getRelease(releaseData);
+    releaseResponse.data.id;
     for (const asset of releaseResponse.data.assets) {
         if (asset.name === name) {
             core.debug(`Removing asset "${asset.name}" due to name conflict.`);
