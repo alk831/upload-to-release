@@ -15,16 +15,17 @@ async function run() {
     const assetPath = core.getInput('path', { required: true });
     const repoToken = core.getInput('repo-token', { required: true });
     const contentType = core.getInput('content-type', { required: true });
-    const allowSkip = Boolean(core.getInput('allow-skip', { required: true }));
+    const allowSkip = core.getInput('allow-skip', { required: true });
     const payload = process.env.GITHUB_EVENT_PATH
         ? require(process.env.GITHUB_EVENT_PATH)
         : {};
     console.log({ payload });
     const ciPayload = utils_1.getCurrentActionPayload();
     const { owner, repo } = utils_1.getRepositoryInfo();
+    const isSkipAllowed = Boolean(allowSkip);
     if (ciPayload.release == null) {
-        console.log({ allowSkip });
-        if (allowSkip) {
+        console.log({ allowSkip, isSkipAllowed });
+        if (isSkipAllowed) {
             console.log("No release data could be found. " +
                 "Action has been skipped since \"allow-skip\" option is set to true.");
             return;
