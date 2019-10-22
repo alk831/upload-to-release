@@ -24,12 +24,12 @@ async function run() {
     );
   }
 
-  const githubApi = new GithubApi(
-    repo,
-    owner,
+  const githubApi = new GithubApi({
+    repoName: repo,
+    repoOwner: owner,
+    logger: core.debug,
     repoToken,
-    core.debug,
-  );
+  });
 
   const releaseResponse = await githubApi.getRelease(releaseId);
 

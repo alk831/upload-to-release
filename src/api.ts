@@ -1,24 +1,25 @@
 import { GitHub } from '@actions/github';
 import Octokit from '@octokit/rest';
 import * as fs from 'fs';
-import { UploadReleaseAssetParams } from './types';
+import { UploadReleaseAssetParams, GithubApiParams } from './types';
 
 export class GithubApi {
   private octokit: GitHub;
+  private repoOwner: string;
+  private repoName: string;
+  private logger?: (message: string) => void;
 
-  constructor(
-    private owner: string,
-    private repo: string,
-    repoToken: string,
-    private logger?: (message: string) => void,
-  ) {
-    this.octokit = new GitHub(repoToken);
+  constructor(params: GithubApiParams) {
+    this.repoOwner = params.repoOwner;
+    this.repoName = params.repoName;
+    this.logger = params.logger;
+    this.octokit = new GitHub(params.repoToken);
   }
 
   getRelease(releaseId: number) {
     return this.octokit.repos.getRelease({
-      owner: this.owner,
-      repo: this.repo,
+      owner: this.repoOwner,
+      repo: this.repoName,
       release_id: releaseId
     });
   }
@@ -33,8 +34,8 @@ export class GithubApi {
       this.logger?.(`Removing asset "${asset.name}" due to name conflict.`);
       
       const assetToDelete = {
-        repo: this.repo,
-        owner: this.owner,
+        repo: this.repoName,
+        owner: this.repoOwner,
         asset_id: asset.id,
       }
       await this.octokit.repos.deleteReleaseAsset(assetToDelete);

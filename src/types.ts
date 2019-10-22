@@ -28,3 +28,10 @@ export type UploadReleaseAssetParams = {
   assetPath: string
   contentType: string
 }
+
+export type GithubApiParams = {
+  repoName: string
+  repoOwner: string
+  repoToken: string
+  logger?: (message: string) => void
+}
