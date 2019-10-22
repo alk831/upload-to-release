@@ -21,7 +21,6 @@ async function run() {
   const isSkipAllowed = allowSkip === 'true';
 
   if (ciPayload.release == null) {
-    console.log({ allowSkip, isSkipAllowed })
     if (isSkipAllowed) {
       console.log(
         "No release data could be found. " +
@@ -38,6 +37,7 @@ async function run() {
   }
 
   const releaseId = Number(ciPayload.release.id);
+  const assetFileName = `${assetName}-${ciPayload.release.tag_name}`;
 
   if (Number.isNaN(releaseId)) {
     throw new Error(
@@ -48,7 +48,7 @@ async function run() {
   const repository = new GithubApi({
     repoName: repo,
     repoOwner: owner,
-    logger: core.debug,
+    logger: console.log,
     repoToken,
   });
 
@@ -60,7 +60,7 @@ async function run() {
   );
 
   const uploadResponse = await repository.uploadReleaseAsset({
-    assetName,
+    assetName: assetFileName,
     assetPath,
     contentType,
     uploadUrl: releaseResponse.data.upload_url,

@@ -24,7 +24,6 @@ async function run() {
     const { owner, repo } = utils_1.getRepositoryInfo();
     const isSkipAllowed = allowSkip === 'true';
     if (ciPayload.release == null) {
-        console.log({ allowSkip, isSkipAllowed });
         if (isSkipAllowed) {
             console.log("No release data could be found. " +
                 "Action has been skipped since \"allow-skip\" option is set to true.");
@@ -36,19 +35,20 @@ async function run() {
             "by setting \"allow-skip\" to true.");
     }
     const releaseId = Number(ciPayload.release.id);
+    const assetFileName = `${assetName}-${ciPayload.release.tag_name}`;
     if (Number.isNaN(releaseId)) {
         throw new Error(`Invalid release id. Couldn't parse "${ciPayload.release.id}" to a number.`);
     }
     const repository = new api_1.GithubApi({
         repoName: repo,
         repoOwner: owner,
-        logger: core.debug,
+        logger: console.log,
         repoToken,
     });
     const releaseResponse = await repository.getRelease(releaseId);
     await repository.removeAssetsWithName(assetName, releaseResponse.data.assets);
     const uploadResponse = await repository.uploadReleaseAsset({
-        assetName,
+        assetName: assetFileName,
         assetPath,
         contentType,
         uploadUrl: releaseResponse.data.upload_url,
