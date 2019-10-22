@@ -22,7 +22,7 @@ async function run() {
     console.log({ payload });
     const ciPayload = utils_1.getCurrentActionPayload();
     const { owner, repo } = utils_1.getRepositoryInfo();
-    const isSkipAllowed = Boolean(allowSkip);
+    const isSkipAllowed = allowSkip === 'true';
     if (ciPayload.release == null) {
         console.log({ allowSkip, isSkipAllowed });
         if (isSkipAllowed) {

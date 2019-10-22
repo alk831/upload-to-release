@@ -18,7 +18,7 @@ async function run() {
 
   const ciPayload = getCurrentActionPayload();
   const { owner, repo } = getRepositoryInfo();
-  const isSkipAllowed = Boolean(allowSkip);
+  const isSkipAllowed = allowSkip === 'true';
 
   if (ciPayload.release == null) {
     console.log({ allowSkip, isSkipAllowed })
