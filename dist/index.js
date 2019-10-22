@@ -57,9 +57,10 @@ async function run() {
     // create PR in octokit repo
     const uploadData = uploadResponse.data;
     const downloadUrl = uploadData.browser_download_url;
-    core.debug(`Download URL: ${downloadUrl}`);
+    console.log(`Download URL: ${downloadUrl}`);
 }
 async function main() {
+    return run();
     try {
         await run();
     }
