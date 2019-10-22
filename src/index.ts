@@ -25,21 +25,21 @@ async function run() {
     );
   }
 
-  const githubApi = new GithubApi({
+  const repository = new GithubApi({
     repoName: repo,
     repoOwner: owner,
     logger: core.debug,
     repoToken,
   });
 
-  const releaseResponse = await githubApi.getRelease(releaseId);
+  const releaseResponse = await repository.getRelease(releaseId);
 
-  await githubApi.removeAssetsWithName(
+  await repository.removeAssetsWithName(
     assetName,
     releaseResponse.data.assets,
   );
 
-  const uploadResponse = await githubApi.uploadReleaseAsset({
+  const uploadResponse = await repository.uploadReleaseAsset({
     assetName,
     assetPath,
     contentType,
