@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import { GithubApi } from './api';
 import { getCurrentActionPayload, getRepositoryInfo } from './utils';
+import Octokit from '@octokit/rest';
 
 async function run() {
   const assetName = core.getInput('name', { required: true });
@@ -47,8 +48,9 @@ async function run() {
 
   // invalid type
   // create PR in octokit repo
-  const downloadUrl_ = uploadResponse.data.browser_download_url;
-  core.debug(`Download URL: ${downloadUrl_}`);
+  const uploadData: Octokit.ReposUploadReleaseAssetResponseValue = uploadResponse.data as any;
+  const downloadUrl = uploadData.browser_download_url;
+  core.debug(`Download URL: ${downloadUrl}`);
 }
 
 async function main() {
