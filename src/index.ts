@@ -9,7 +9,7 @@ async function run() {
   const repoToken = core.getInput('repo-token', { required: true });
   const contentType = core.getInput('content-type', { required: true });
 
-  const payload: ActionPayload = process.env.GITHUB_EVENT_PATH
+  const payload = process.env.GITHUB_EVENT_PATH
     ? require(process.env.GITHUB_EVENT_PATH)
     : {}; 
 

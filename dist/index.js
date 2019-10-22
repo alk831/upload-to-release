@@ -8,51 +8,41 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
-const github_1 = require("@actions/github");
-const fs = __importStar(require("fs"));
+const api_1 = require("./api");
+const utils_1 = require("./utils");
 async function run() {
-    const payload = process.env.GITHUB_EVENT_PATH
-        ? require(process.env.GITHUB_EVENT_PATH)
-        : {};
-    console.log({ payload });
-    core.debug(process.env.GITHUB_EVENT_PATH);
-    core.debug('process.env.GITHUB_EVENT_PATH');
-    console.log(process.env.GITHUB_EVENT_PATH, process.env.GITHUB_REPOSITORY);
-    const { release, action: actionName } = payload;
-    if (!release) {
-        return core.setFailed(`No release has been found. Skipping action (${actionName}).`);
-    }
-    const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
-    const releaseData = { owner, repo, release_id: release.id };
     const assetName = core.getInput('name', { required: true });
     const assetPath = core.getInput('path', { required: true });
     const repoToken = core.getInput('repo-token', { required: true });
     const contentType = core.getInput('content-type', { required: true });
-    const octokit = new github_1.GitHub(repoToken);
-    octokit.repos.getRelease(releaseData);
-    const releaseResponse = await octokit.repos.getRelease(releaseData);
-    for (const asset of releaseResponse.data.assets) {
-        if (asset.name === assetName) {
-            core.debug(`Removing asset "${asset.name}" due to name conflict.`);
-            const assetToDelete = { owner, repo, asset_id: asset.id };
-            await octokit.repos.deleteReleaseAsset(assetToDelete);
-        }
+    const payload = process.env.GITHUB_EVENT_PATH
+        ? require(process.env.GITHUB_EVENT_PATH)
+        : {};
+    console.log({ payload });
+    const ciPayload = utils_1.getCurrentActionPayload();
+    const { owner, repo } = utils_1.getRepositoryInfo();
+    const releaseId = Number(ciPayload.release.id);
+    if (Number.isNaN(releaseId)) {
+        throw new Error(`Invalid release id. Couldn't parse "${ciPayload.release.id}" to a number.`);
     }
-    const headers = {
-        'content-type': contentType,
-        'content-length': fs.statSync(assetPath).size,
-    };
-    const file = fs.createReadStream(assetPath);
-    const uploadResponse = await octokit.repos.uploadReleaseAsset({
-        url: releaseResponse.data.upload_url,
-        name: assetName,
-        headers,
-        file,
+    const repository = new api_1.GithubApi({
+        repoName: repo,
+        repoOwner: owner,
+        logger: core.debug,
+        repoToken,
     });
-    console.log({ uploadResponse });
+    const releaseResponse = await repository.getRelease(releaseId);
+    await repository.removeAssetsWithName(assetName, releaseResponse.data.assets);
+    const uploadResponse = await repository.uploadReleaseAsset({
+        assetName,
+        assetPath,
+        contentType,
+        uploadUrl: releaseResponse.data.upload_url,
+    });
     // invalid type
     // create PR in octokit repo
-    const downloadUrl = uploadResponse.data.browser_download_url;
+    const uploadData = uploadResponse.data;
+    const downloadUrl = uploadData.browser_download_url;
     core.debug(`Download URL: ${downloadUrl}`);
 }
 async function main() {
