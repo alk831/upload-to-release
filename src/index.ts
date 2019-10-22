@@ -10,12 +10,6 @@ async function run() {
   const contentType = core.getInput('content-type', { required: true });
   const allowSkip = core.getInput('allow-skip', { required: true });
 
-  const payload = process.env.GITHUB_EVENT_PATH
-    ? require(process.env.GITHUB_EVENT_PATH)
-    : {}; 
-
-  console.log({ payload });
-
   const ciPayload = getCurrentActionPayload();
   const { owner, repo } = getRepositoryInfo();
   const isSkipAllowed = allowSkip === 'true';
@@ -74,7 +68,6 @@ async function run() {
 }
 
 async function main() {
-  return run();
   try {
     await run();
   } catch(error) {

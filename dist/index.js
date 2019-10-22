@@ -16,10 +16,6 @@ async function run() {
     const repoToken = core.getInput('repo-token', { required: true });
     const contentType = core.getInput('content-type', { required: true });
     const allowSkip = core.getInput('allow-skip', { required: true });
-    const payload = process.env.GITHUB_EVENT_PATH
-        ? require(process.env.GITHUB_EVENT_PATH)
-        : {};
-    console.log({ payload });
     const ciPayload = utils_1.getCurrentActionPayload();
     const { owner, repo } = utils_1.getRepositoryInfo();
     const isSkipAllowed = allowSkip === 'true';
@@ -60,7 +56,6 @@ async function run() {
     console.log(`Download URL: ${downloadUrl}`);
 }
 async function main() {
-    return run();
     try {
         await run();
     }
