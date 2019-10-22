@@ -23,9 +23,11 @@ async function run() {
     const ciPayload = utils_1.getCurrentActionPayload();
     const { owner, repo } = utils_1.getRepositoryInfo();
     if (ciPayload.release == null) {
+        console.log({ allowSkip });
         if (allowSkip) {
-            return core.debug("No release data could be found. " +
+            console.log("No release data could be found. " +
                 "Action has been skipped since \"allow-skip\" option is set to true.");
+            return;
         }
         throw new Error("No release data could be found. " +
             "This action is meant to be run on release pipelines. " +
