@@ -72,6 +72,8 @@ async function main() {
     await run();
   } catch(error) {
     core.setFailed(error.message);
+  } finally {
+    process.exit(0);
   }
 }
 

@@ -62,5 +62,8 @@ async function main() {
     catch (error) {
         core.setFailed(error.message);
     }
+    finally {
+        process.exit(0);
+    }
 }
 main();
