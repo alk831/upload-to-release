@@ -1,6 +1,5 @@
 import * as core from '@actions/core';
-import { GitHub } from '@actions/github';
-import * as fs from 'fs';
+import { GithubApi } from './api';
 
 async function run() {
   const payload: ActionPayload = process.env.GITHUB_EVENT_PATH
@@ -27,40 +26,37 @@ async function run() {
   const repoToken = core.getInput('repo-token', { required: true });
   const contentType = core.getInput('content-type', { required: true });
 
-  const octokit = new GitHub(repoToken);
-  octokit.repos.getRelease(releaseData);
+  const releaseId = Number(release.id);
 
-  const releaseResponse = await octokit.repos.getRelease(releaseData);
-
-  for (const asset of releaseResponse.data.assets) {
-    if (asset.name === assetName) {
-      core.debug(`Removing asset "${asset.name}" due to name conflict.`);
-      
-      const assetToDelete = { owner, repo, asset_id: asset.id };
-      await octokit.repos.deleteReleaseAsset(assetToDelete);
-    }
+  if (Number.isNaN(releaseId)) {
+    return core.setFailed(``);
   }
 
-  const headers = {
-    'content-type': contentType,
-    'content-length': fs.statSync(assetPath).size,
-  }
-  const file = fs.createReadStream(assetPath);
+  const githubApi = new GithubApi(
+    repo,
+    owner,
+    repoToken,
+    core.debug,
+  );
 
-  const uploadResponse = await octokit.repos.uploadReleaseAsset({
-    url: releaseResponse.data.upload_url,
-    name: assetName,
-    headers, 
-    file,
+  const releaseResponse = await githubApi.getRelease(releaseId);
+
+  await githubApi.removeAssetsWithName(
+    assetName,
+    releaseResponse.data.assets,
+  );
+
+  const uploadResponse = await githubApi.uploadReleaseAsset({
+    assetName,
+    assetPath,
+    contentType,
+    uploadUrl: releaseResponse.data.upload_url,
   });
-
-  console.log({ uploadResponse })
 
   // invalid type
   // create PR in octokit repo
-  const downloadUrl = uploadResponse.data.browser_download_url;
-
-  core.debug(`Download URL: ${downloadUrl}`);
+  const downloadUrl_ = uploadResponse.data.browser_download_url;
+  core.debug(`Download URL: ${downloadUrl_}`);
 }
 
 async function main() {

@@ -35,7 +35,7 @@
   "devDependencies": {
     "@types/node": "^12.7.11",
     "husky": "^3.0.8",
-    "typescript": "^3.6.3"
+    "typescript": "^3.7.0-beta"
   },
   "dependencies": {
     "@actions/core": "^1.1.3",
