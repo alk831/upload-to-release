@@ -1,6 +1,7 @@
 import { GitHub } from '@actions/github';
 import Octokit from '@octokit/rest';
 import * as fs from 'fs';
+import { UploadReleaseAssetParams } from './types';
 
 export class GithubApi {
   private octokit: GitHub;
@@ -40,21 +41,16 @@ export class GithubApi {
     }
   }
 
-  async uploadReleaseAsset({
-    uploadUrl,
-    assetName,
-    assetPath,
-    contentType,
-  }: UploadReleaseAssetParam) {
+  async uploadReleaseAsset(params: UploadReleaseAssetParams) {
     const headers = {
-      'content-type': contentType,
-      'content-length': fs.statSync(assetPath).size,
+      'content-type': params.contentType,
+      'content-length': fs.statSync(params.assetPath).size,
     }
-    const file = fs.createReadStream(assetPath);
+    const file = fs.createReadStream(params.assetPath);
 
     const uploadResponse = await this.octokit.repos.uploadReleaseAsset({
-      url: uploadUrl,
-      name: assetName,
+      url: params.uploadUrl,
+      name: params.assetName,
       headers, 
       file,
     });
@@ -63,9 +59,3 @@ export class GithubApi {
   }
 }
 
-type UploadReleaseAssetParam = {
-  uploadUrl: string
-  assetName: string
-  assetPath: string
-  contentType: string
-}

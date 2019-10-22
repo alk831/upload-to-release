@@ -1,35 +1,27 @@
 import * as core from '@actions/core';
 import { GithubApi } from './api';
+import { getCurrentActionPayload, getRepositoryInfo } from './utils';
 
 async function run() {
-  const payload: ActionPayload = process.env.GITHUB_EVENT_PATH
-    ? require(process.env.GITHUB_EVENT_PATH)
-    : {}; 
-
-  console.log({ payload });
-  core.debug(process.env.GITHUB_EVENT_PATH);
-  core.debug('process.env.GITHUB_EVENT_PATH');
-
-  console.log(process.env.GITHUB_EVENT_PATH, process.env.GITHUB_REPOSITORY)
-
-  const { release, action: actionName } = payload;
-
-  if (!release) {
-    return core.setFailed(`No release has been found. Skipping action (${actionName}).`);
-  }
-
-  const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
-  const releaseData = { owner, repo, release_id: release.id };
-
   const assetName = core.getInput('name', { required: true });
   const assetPath = core.getInput('path', { required: true });
   const repoToken = core.getInput('repo-token', { required: true });
   const contentType = core.getInput('content-type', { required: true });
 
-  const releaseId = Number(release.id);
+  const payload: ActionPayload = process.env.GITHUB_EVENT_PATH
+    ? require(process.env.GITHUB_EVENT_PATH)
+    : {}; 
+
+  console.log({ payload });
+
+  const ciPayload = getCurrentActionPayload();
+  const { owner, repo } = getRepositoryInfo();
+  const releaseId = Number(ciPayload.release.id);
 
   if (Number.isNaN(releaseId)) {
-    return core.setFailed(``);
+    throw new Error(
+      `Invalid release id. Couldn't parse "${ciPayload.release.id}" to a number.`
+    );
   }
 
   const githubApi = new GithubApi(
@@ -68,21 +60,3 @@ async function main() {
 }
 
 main();
-
-interface ActionPayload {
-  action?: string
-  release?: {
-    id: number
-    name: string
-    tag_name: string
-    prerelease: boolean
-    draft: boolean
-    assets: unknown[]
-    created_at: string
-    published_at: string
-    /** Branch name? */
-    target_commitish: string
-    url: string
-    assets_url: string
-  }
-}
