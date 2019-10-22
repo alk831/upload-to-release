@@ -1,7 +1,7 @@
 
 export interface ActionPayload {
-  action: string
-  release: {
+  action?: string
+  release?: {
     id: number
     name: string
     tag_name: string

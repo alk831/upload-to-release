@@ -17,6 +17,13 @@ async function run() {
 
   const ciPayload = getCurrentActionPayload();
   const { owner, repo } = getRepositoryInfo();
+
+  if (ciPayload.release == null) {
+    throw new Error(
+      `No release data could be found. This action is meant to be run on release pipelines.`
+    );
+  }
+
   const releaseId = Number(ciPayload.release.id);
 
   if (Number.isNaN(releaseId)) {

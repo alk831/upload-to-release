@@ -5,12 +5,11 @@ exports.getCurrentActionPayload = () => {
     const eventPath = process.env.GITHUB_EVENT_PATH;
     if ((_a = eventPath) === null || _a === void 0 ? void 0 : _a.length) {
         const payload = require(eventPath);
-        if (typeof payload === 'object' &&
-            payload.release != null) {
+        if (typeof payload === 'object') {
             return payload;
         }
     }
-    throw new Error(`No release data has been found "${eventPath}".`);
+    throw new Error(`No release data has been found for event path: "${eventPath}".`);
 };
 exports.getRepositoryInfo = () => {
     var _a;
@@ -21,5 +20,5 @@ exports.getRepositoryInfo = () => {
             return { owner, repo };
         }
     }
-    throw new Error(`No repository info has been found "${repositoryPath}".`);
+    throw new Error(`No repository info has been found for path: "${repositoryPath}".`);
 };
