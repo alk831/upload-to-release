@@ -1,6 +1,6 @@
 name: Upload to release test
 
-on: [release] 
+on: [push] 
 
 jobs:
 
